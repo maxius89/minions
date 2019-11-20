@@ -96,6 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 200
+  maxResourcesToCarry: 15
 --- !u!58 &6322288925494933422
 CircleCollider2D:
   m_ObjectHideFlags: 0

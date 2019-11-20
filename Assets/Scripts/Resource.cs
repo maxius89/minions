@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class Resource : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D collision)
+    [SerializeField] private int value = 3;
+
+    private void OnTriggerEnter2D(Collider2D otherCollider)
     {
         Destroy(gameObject);
+
+        var minion = otherCollider.GetComponent<Minion>();
+        if (minion)
+        {
+            minion.addResource(value);
+        }
     }
 }

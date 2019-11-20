@@ -45,4 +45,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resource: {fileID: 7690720039163848595, guid: 080d43a0d2da9f44998902f1891beb7a,
     type: 3}
-  resourceSpawnTimerInSeconds: 3
+  resourceSpawnTimerInSeconds: 1
