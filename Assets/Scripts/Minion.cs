@@ -8,8 +8,10 @@ public class Minion : MonoBehaviour
     [SerializeField] private float velocity = 200.0f;
     [SerializeField] private float angularVelocity = 500.0f;
     [SerializeField] private int maxResourcesToCarry = 15;
-    private Vector3 targetPosition;
+    [SerializeField] private float repulsionForce = 50.0f;
+
     private readonly float distanceThreshold = 10.0f;
+    private Vector3 targetPosition;
     private Base myBase;
     private int resources = 0;
 
@@ -66,12 +68,32 @@ public class Minion : MonoBehaviour
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation,
                 Quaternion.AngleAxis(angle, Vector3.forward), rotStep);
-            transform.position += transform.up * fwdStep;
+            transform.position += transform.up * fwdStep + Separate();
         }
         else
         {
             FindRandomTargetLocation();
         }
+    }
+
+    private Vector3 Separate()
+    {
+        Vector3 separation = Vector3.zero;
+        var minions = FindObjectsOfType<Minion>();
+
+        if (minions.Length > 0)
+        {
+            foreach (Minion minion in minions)
+            {
+               Vector3 relativePosition = transform.position - minion.gameObject.transform.position;
+               if (relativePosition.sqrMagnitude > Mathf.Epsilon)
+               {
+                    separation += relativePosition / (relativePosition.sqrMagnitude);
+               }
+            }
+        }
+
+        return separation * repulsionForce;
     }
 
     private void FindRandomTargetLocation()
