@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class Minion : MonoBehaviour
 {
-    [SerializeField] private float speed = 200.0f;
+    [SerializeField] private float velocity = 200.0f;
+    [SerializeField] private float angularVelocity = 500.0f;
     [SerializeField] private int maxResourcesToCarry = 15;
-    private Vector2 targetPosition;
+    private Vector3 targetPosition;
     private readonly float distanceThreshold = 10.0f;
     private Base myBase;
     private int resources = 0;
@@ -58,8 +59,14 @@ public class Minion : MonoBehaviour
     {
         if (Vector2.Distance(targetPosition, transform.position) > distanceThreshold)
         {
-            float step = speed * Time.deltaTime;
-            transform.position = Vector2.MoveTowards(transform.position, targetPosition, step);
+            Vector3 moveDirection = transform.position - targetPosition;
+            float angle = (Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg) + 90.0f;
+            float fwdStep = velocity * Time.deltaTime; 
+            float rotStep = angularVelocity * Time.deltaTime; 
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                Quaternion.AngleAxis(angle, Vector3.forward), rotStep);
+            transform.position += transform.up * fwdStep;
         }
         else
         {
@@ -82,7 +89,7 @@ public class Minion : MonoBehaviour
 
     public void setBase(Base newBase)
     {
-        this.myBase = newBase;
+        myBase = newBase;
     }
 
     private void OnTriggerEnter2D(Collider2D otherCollider)
