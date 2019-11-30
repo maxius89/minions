@@ -180,6 +180,9 @@ MonoBehaviour:
   angularVelocity: 500
   maxResourcesToCarry: 15
   repulsionForce: 200
+  energy: 100
+  maxEnergy: 100
+  energyDepletionRate: 2
 --- !u!58 &6322288925494933422
 CircleCollider2D:
   m_ObjectHideFlags: 0

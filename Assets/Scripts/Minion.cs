@@ -9,6 +9,9 @@ public class Minion : MonoBehaviour
     [SerializeField] private float angularVelocity = 500.0f;
     [SerializeField] private int maxResourcesToCarry = 15;
     [SerializeField] private float repulsionForce = 50.0f;
+    [SerializeField] private float energy;
+    [SerializeField] private float maxEnergy = 100.0f;
+    [SerializeField] private float energyDepletionRate = 1.0f;
 
     private readonly float distanceThreshold = 10.0f;
     private Vector3 targetPosition;
@@ -18,7 +21,11 @@ public class Minion : MonoBehaviour
     void Start()
     {
         FindRandomTargetLocation();
-        setBase(FindObjectOfType<Base>());
+        if (!myBase) { setBase(FindObjectOfType<Base>()); }
+        energy = maxEnergy;
+
+        var arrow = transform.Find("Forward Arrow").gameObject;
+        GetComponent<SpriteRenderer>().color = myBase.getTeamColor();
     }
 
     void Update()
@@ -33,6 +40,25 @@ public class Minion : MonoBehaviour
         }
         
         MoveTowardTarget();
+        HandleEnergy();
+        SetArrowSpriteColor();
+    }
+
+    private void HandleEnergy()
+    {
+        energy -= energyDepletionRate * Time.deltaTime;
+        if (energy <= 0) { Destroy(gameObject); }
+    }
+
+    private void SetArrowSpriteColor()
+    {
+        float red = 1 - energy / maxEnergy;
+        float green = 1 - energy / maxEnergy;
+        float blue = 1 - energy / maxEnergy;
+        float alpha = energy / maxEnergy;
+        Color spriteColor = new Color(red, green, blue, alpha);
+        var arrow = transform.Find("Forward Arrow").gameObject;
+        arrow.GetComponent<SpriteRenderer>().color = spriteColor;
     }
 
     private void GoBackToBase()
@@ -107,6 +133,12 @@ public class Minion : MonoBehaviour
     public void addResource(int num)
     {
         resources += num;
+    }
+
+    internal void addEnergy(float num)
+    {
+        energy += num;
+        energy = Mathf.Clamp(energy, 0, maxEnergy);
     }
 
     public void setBase(Base newBase)

@@ -8,12 +8,15 @@ public class Base : MonoBehaviour
     [SerializeField] private int resources = 0;
     [SerializeField] GameObject minion;
     [SerializeField] int minionCost = 30;
+    [SerializeField] private Color teamColor;
 
     GameObject minionsParent;
     const string cMinionsParentName = "Minions";
 
     private void Start()
     {
+        var spriteRenderer = transform.Find("Base Sprite").gameObject;
+        spriteRenderer.GetComponent<SpriteRenderer>().color = teamColor;
         CreateMinionsParentObject();
     }
 
@@ -42,5 +45,10 @@ public class Base : MonoBehaviour
     public void TakeResources(int num)
     {
         resources += num;
+    }
+
+    public Color getTeamColor()
+    {
+        return teamColor;
     }
 }
