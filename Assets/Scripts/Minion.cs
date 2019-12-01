@@ -5,43 +5,142 @@ using UnityEngine;
 
 public class Minion : MonoBehaviour
 {
-    [SerializeField] private float velocity = 200.0f;
+    [SerializeField] private float maxVelocity = 200.0f;
     [SerializeField] private float angularVelocity = 500.0f;
     [SerializeField] private int maxResourcesToCarry = 15;
     [SerializeField] private float repulsionForce = 50.0f;
     [SerializeField] private float energy;
     [SerializeField] private float maxEnergy = 100.0f;
     [SerializeField] private float energyDepletionRate = 1.0f;
+    [SerializeField] private float rangeOfSight = 300.0f;
+    [SerializeField] private float attackRange = 200.0f;
+    [SerializeField] GameObject weapon;
 
     private readonly float distanceThreshold = 10.0f;
+    private float velocity;
     private Vector3 targetPosition;
     private Base myBase;
     private int resources = 0;
+    private MinionState currentState;
+
+    public enum MinionState
+    {
+        None,
+        Collect,
+        ReturnHome,
+        Attack
+    }
 
     void Start()
     {
-        FindRandomTargetLocation();
-        if (!myBase) { setBase(FindObjectOfType<Base>()); }
+        velocity = maxVelocity;
+        if (!myBase) { SetBase(FindObjectOfType<Base>()); }
         energy = maxEnergy;
+        currentState = MinionState.Collect;
 
+        FindRandomTargetLocation();
         var arrow = transform.Find("Forward Arrow").gameObject;
         GetComponent<SpriteRenderer>().color = myBase.getTeamColor();
     }
 
     void Update()
     {
-        if (resources >= maxResourcesToCarry)
+        velocity = maxVelocity * (energy / maxEnergy);
+
+        switch (currentState)
         {
-            GoBackToBase();
+            case MinionState.Collect: UpdateCollectState(); break;
+            case MinionState.ReturnHome: UpdateReturnHome(); break;
+            case MinionState.Attack: UpdateAttack(); break;
         }
-        else
-        {
-            SearchForResource();
-        }
-        
-        MoveTowardTarget();
+
         HandleEnergy();
         SetArrowSpriteColor();
+    }
+
+    private void UpdateAttack()
+    {
+        FindClosestEnemy();
+        MoveTowardTarget();
+
+
+        if (!transform.Find("Weapon"))
+        {
+            Vector3 weaponOffset = new Vector3(0, 2.6f);
+            var newWeapon = Instantiate(weapon, transform.position, Quaternion.identity) as GameObject;
+            newWeapon.transform.SetParent(transform);
+            newWeapon.transform.localPosition = weaponOffset;
+            newWeapon.transform.localRotation = Quaternion.identity;
+            newWeapon.name = "Weapon";
+            newWeapon.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+        if (!AssessEnemies())
+        {
+            Destroy(transform.Find("Weapon").gameObject);
+            currentState = MinionState.Collect;
+        }
+    }
+
+    private void FindClosestEnemy()
+    {
+        var minions = FindObjectsOfType<Minion>();
+        if (minions.Length == 0) return;
+
+        float minDistance = float.MaxValue;
+        foreach (var minion in minions)
+        {
+            float distance = Vector2.Distance(transform.position, minion.transform.position);
+            if (minion.GetBase() != myBase && minDistance > distance && distance <= attackRange)
+            {
+                minDistance = distance;
+                targetPosition = minion.transform.position;
+            }
+        }
+    }
+
+    private void UpdateCollectState()
+    {
+        SearchForResource();
+        MoveTowardTarget();
+
+        if (AssessEnemies())
+        {
+            currentState = MinionState.Attack;
+        }
+        else if (resources >= maxResourcesToCarry)
+        {
+            currentState = MinionState.ReturnHome;
+        }
+
+        
+    }
+
+    private bool AssessEnemies()
+    {
+        int enemyCnt = 0, friendCnt = 0;
+        var minions = FindObjectsOfType<Minion>();
+        foreach (var minion in minions)
+        {
+            if (Vector2.Distance(transform.position, minion.transform.position) <= attackRange)
+            {
+               if( minion.GetBase() == myBase) { friendCnt++; }
+               else { enemyCnt++; }
+            }
+        }
+        
+        return enemyCnt != 0 && enemyCnt * 2 < friendCnt - 1;
+    }
+
+    private void UpdateReturnHome()
+    {
+        GoBackToBase();
+        MoveTowardTarget();
+
+        if (Vector2.Distance(transform.position, myBase.transform.position) < distanceThreshold)
+        {
+            currentState = MinionState.Collect;
+        }
     }
 
     private void HandleEnergy()
@@ -75,7 +174,7 @@ public class Minion : MonoBehaviour
         foreach (Resource resource in resources)
         {
             float distance = Vector2.Distance(transform.position, resource.transform.position);
-            if (minDistance > distance)
+            if (minDistance > distance && distance <= rangeOfSight)
             {
                 minDistance = distance;
                 targetPosition = resource.transform.position;
@@ -130,20 +229,24 @@ public class Minion : MonoBehaviour
         targetPosition = new Vector2(UnityEngine.Random.Range(-xLim, xLim), UnityEngine.Random.Range(-yLim, yLim));
     }
 
-    public void addResource(int num)
+    public void AddResource(int num)
     {
         resources += num;
     }
 
-    internal void addEnergy(float num)
+    public void TakeDamage(float num)
     {
-        energy += num;
-        energy = Mathf.Clamp(energy, 0, maxEnergy);
+        energy -= num;
     }
 
-    public void setBase(Base newBase)
+    public void SetBase(Base newBase)
     {
         myBase = newBase;
+    }
+
+    public Base GetBase()
+    {
+        return myBase;
     }
 
     private void OnTriggerEnter2D(Collider2D otherCollider)
@@ -152,6 +255,7 @@ public class Minion : MonoBehaviour
         {
             myBase.TakeResources(resources);
             resources = 0;
+            energy = maxEnergy;
         }
     }
 }

@@ -25,7 +25,7 @@ public class Base : MonoBehaviour
         if (resources >= minionCost)
         {
             GameObject newMinion = Instantiate(minion, transform.position, Quaternion.identity) as GameObject;
-            newMinion.GetComponent<Minion>().setBase(this);
+            newMinion.GetComponent<Minion>().SetBase(this);
             newMinion.transform.SetParent(minionsParent.transform);
 
             resources -= minionCost;

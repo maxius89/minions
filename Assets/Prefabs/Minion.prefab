@@ -176,13 +176,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb6a60abd729b043a9b4c004653ec38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: 500
+  maxVelocity: 500
   angularVelocity: 500
   maxResourcesToCarry: 15
-  repulsionForce: 200
+  repulsionForce: 150
   energy: 100
   maxEnergy: 100
-  energyDepletionRate: 2
+  energyDepletionRate: 1
+  rangeOfSight: 800
+  attackRange: 200
+  weapon: {fileID: 1893107175687457359, guid: ae31149f7a157194c81c3a915b6c7a3d, type: 3}
 --- !u!58 &6322288925494933422
 CircleCollider2D:
   m_ObjectHideFlags: 0
