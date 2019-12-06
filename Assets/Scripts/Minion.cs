@@ -35,7 +35,6 @@ public class Minion : MonoBehaviour
         currentState = MinionState.Collect;
 
         FindRandomTargetLocation();
-        var arrow = transform.Find("Forward Arrow").gameObject;
         GetComponent<SpriteRenderer>().color = myBase.getTeamColor();
     }
 
@@ -50,7 +49,6 @@ public class Minion : MonoBehaviour
         }
 
         HandleEnergy();
-        SetArrowSpriteColor();
     }
 
     private void UpdateWander()
@@ -157,17 +155,6 @@ public class Minion : MonoBehaviour
     {
         energy -= energyDepletionRate * Time.deltaTime;
         if (energy <= 0) { Destroy(gameObject); }
-    }
-
-    private void SetArrowSpriteColor()
-    {
-        float red = 1 - energy / maxEnergy;
-        float green = 1 - energy / maxEnergy;
-        float blue = 1 - energy / maxEnergy;
-        float alpha = energy / maxEnergy;
-        Color spriteColor = new Color(red, green, blue, alpha);
-        var arrow = transform.Find("Forward Arrow").gameObject;
-        arrow.GetComponent<SpriteRenderer>().color = spriteColor;
     }
 
     private void GoBackToBase()

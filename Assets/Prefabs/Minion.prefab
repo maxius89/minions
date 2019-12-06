@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1913907569728987021}
   - component: {fileID: 1393183253519667726}
+  - component: {fileID: 4123624561996437841}
   m_Layer: 0
-  m_Name: Forward Arrow
+  m_Name: Direction Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,6 +81,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4123624561996437841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2584323107305666378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40dae2839cc092e4183988d6a8cfdb42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5693859859307368770
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,10 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb6a60abd729b043a9b4c004653ec38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxVelocity: 500
-  angularVelocity: 500
   maxResourcesToCarry: 15
-  repulsionForce: 150
   energy: 100
   maxEnergy: 100
   energyDepletionRate: 1
