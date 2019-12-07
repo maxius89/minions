@@ -103,10 +103,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5693859859307368764}
   - component: {fileID: 5693859859307368765}
-  - component: {fileID: 5693859859307368767}
   - component: {fileID: 6322288925494933422}
   - component: {fileID: 8062191063535469862}
   - component: {fileID: -5051960832242867240}
+  - component: {fileID: 5905889558920048081}
   m_Layer: 0
   m_Name: Minion
   m_TagString: Untagged
@@ -178,25 +178,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5693859859307368767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5693859859307368770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcb6a60abd729b043a9b4c004653ec38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxResourcesToCarry: 15
-  energy: 100
-  maxEnergy: 100
-  energyDepletionRate: 1
-  rangeOfSight: 800
-  attackRange: 200
-  weapon: {fileID: 1893107175687457359, guid: ae31149f7a157194c81c3a915b6c7a3d, type: 3}
 --- !u!58 &6322288925494933422
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -249,3 +230,22 @@ MonoBehaviour:
   maxVelocity: 500
   angularVelocity: 500
   repulsionForce: 150
+--- !u!114 &5905889558920048081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5693859859307368770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75543b991ae6b04abd14b44f1b5b4d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxResourcesToCarry: 15
+  energy: 0
+  maxEnergy: 100
+  energyDepletionRate: 1
+  rangeOfSight: 800
+  attackRange: 200
+  weapon: {fileID: 1893107175687457359, guid: ae31149f7a157194c81c3a915b6c7a3d, type: 3}

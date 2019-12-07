@@ -15,14 +15,14 @@ public class Move : MonoBehaviour
     void Start()
     {
         velocity = maxVelocity;
-        targetPosition = GetComponent<Minion>().GetTargetPosition();
+        targetPosition = GetComponent<Minion>().TargetPosition;
     }
 
     void Update()
     {
         var minion = GetComponent<Minion>();
         velocity = maxVelocity * minion.GetEnergyCoeff();
-        targetPosition = minion.GetTargetPosition();
+        targetPosition = minion.TargetPosition;
         MoveTowardTarget();
     }
 

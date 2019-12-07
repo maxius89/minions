@@ -18,7 +18,7 @@ public class Weapon : MonoBehaviour
         var otherMinion = otherCollider.gameObject.GetComponent<Minion>();
         if (!otherMinion) return;
 
-        if (otherMinion.GetBase() != parent.GetBase())
+        if (otherMinion.MyBase != parent.MyBase)
         {
             otherMinion.TakeDamage(damage);
         }
