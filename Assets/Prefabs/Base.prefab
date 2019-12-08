@@ -126,9 +126,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cd28244c778c84428c1a16af7d4d9e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resources: 30
-  minion: {fileID: 5693859859307368770, guid: 394abc59c5e21b741ae9870df07e6eea, type: 3}
+  resources: 100
+  collector: {fileID: 5693859859307368770, guid: 394abc59c5e21b741ae9870df07e6eea,
+    type: 3}
+  builder: {fileID: 5921618077059263162, guid: 8e4904555405ed8468f1717027c4e57a, type: 3}
+  farm: {fileID: 5472352041178419648, guid: f8f1c6dc55569ae44930bf0ff487a6ec, type: 3}
   minionCost: 30
+  teamColor: {r: 0.20784314, g: 0.48235294, b: 0.24910845, a: 1}
 --- !u!50 &7072841430433726824
 Rigidbody2D:
   serializedVersion: 4

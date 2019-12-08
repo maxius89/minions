@@ -10,8 +10,6 @@ public class Minion : MonoBehaviour
     [SerializeField] protected float maxEnergy = 100.0f;
     [SerializeField] protected float energyDepletionRate = 1.0f;
     [SerializeField] protected float rangeOfSight = 300.0f;
-    [SerializeField] protected float attackRange = 200.0f;
-    [SerializeField] protected GameObject weapon;
     protected int resources = 0;
 
     public Vector3 TargetPosition { get; protected set; }

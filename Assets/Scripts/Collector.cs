@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Collector : Minion
 {
-    protected MinionState currentState;
+    [SerializeField] protected float attackRange = 200.0f;
+    [SerializeField] protected GameObject weapon;
+    protected CollectorState currentState;
 
-    public enum MinionState
+    public enum CollectorState
     {
         None,
         Collect,
@@ -18,20 +20,20 @@ public class Collector : Minion
     protected override void Initailze()
     {
         energy = maxEnergy;
-        currentState = MinionState.Collect;
+        currentState = CollectorState.Collect;
 
         FindRandomTargetLocation();
-        GetComponent<SpriteRenderer>().color = MyBase.getTeamColor();
+        GetComponent<SpriteRenderer>().color = MyBase.TeamColor;
     }
 
     protected override void UpdateFSM()
     {
         switch (currentState)
         {
-            case MinionState.Collect: UpdateCollectState(); break;
-            case MinionState.ReturnHome: UpdateReturnHome(); break;
-            case MinionState.Attack: UpdateAttack(); break;
-            case MinionState.Wander: UpdateWander(); break;
+            case CollectorState.Collect: UpdateCollectState(); break;
+            case CollectorState.ReturnHome: UpdateReturnHome(); break;
+            case CollectorState.Attack: UpdateAttack(); break;
+            case CollectorState.Wander: UpdateWander(); break;
         }
     }
 
@@ -39,16 +41,16 @@ public class Collector : Minion
     {
         if (!SearchForResource())
         {
-            currentState = MinionState.Wander;
+            currentState = CollectorState.Wander;
         }
 
         if (AssessEnemies())
         {
-            currentState = MinionState.Attack;
+            currentState = CollectorState.Attack;
         }
         else if (resources >= maxResourcesToCarry)
         {
-            currentState = MinionState.ReturnHome;
+            currentState = CollectorState.ReturnHome;
         }
     }
 
@@ -58,7 +60,7 @@ public class Collector : Minion
 
         if (resources <= 0)
         {
-            currentState = MinionState.Collect;
+            currentState = CollectorState.Collect;
         }
     }
 
@@ -70,7 +72,7 @@ public class Collector : Minion
         if (!AssessEnemies())
         {
             Destroy(transform.Find("Weapon").gameObject);
-            currentState = MinionState.Collect;
+            currentState = CollectorState.Collect;
         }
     }
 
@@ -80,11 +82,11 @@ public class Collector : Minion
 
         if (AssessEnemies())
         {
-            currentState = MinionState.Attack;
+            currentState = CollectorState.Attack;
         }
         else if (SearchForResource())
         {
-            currentState = MinionState.Collect;
+            currentState = CollectorState.Collect;
         }
     }
 
