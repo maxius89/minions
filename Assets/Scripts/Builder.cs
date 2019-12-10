@@ -6,6 +6,8 @@ using UnityEngine;
 public class Builder : Minion
 {
     protected BuilderState currentState;
+    private GameObject designatedBuilding;
+    public bool IsCarryingMaterial { get; set; }
     public enum BuilderState
     {
         None,
@@ -42,11 +44,11 @@ public class Builder : Minion
         {
             currentState = BuilderState.Build;
         }
-        else if (IsBuildingNeedsMaintianance())
-        {
-            currentState = BuilderState.Maintain;
-
-        }
+        //else if (IsBuildingNeedsMaintianance())
+        //{
+        //    currentState = BuilderState.Maintain;
+        //
+        //}
 
     }
 
@@ -69,7 +71,18 @@ public class Builder : Minion
 
     private void UpdateBuild()
     {
-       TargetPosition = MyBase.GetCurrentConstruction().transform.position;
+       designatedBuilding = MyBase.GetCurrentConstruction();
+
+        if(IsCarryingMaterial)
+        {
+            TargetPosition = designatedBuilding.transform.position;
+        }
+        else
+        {
+            TargetPosition = MyBase.transform.position;
+        }
+
+       
     }
 
     private void FindRandomTargetLocation()
@@ -78,5 +91,23 @@ public class Builder : Minion
         int yLim = Screen.currentResolution.height / 2;
 
         TargetPosition = new Vector2(UnityEngine.Random.Range(-xLim, xLim), UnityEngine.Random.Range(-yLim, yLim));
+    }
+
+    private void OnTriggerEnter2D(Collider2D otherCollider)
+    {
+        if (otherCollider.gameObject.GetComponent<Base>() == MyBase)
+        {
+            energy = maxEnergy;
+
+            if (designatedBuilding)
+            {
+                IsCarryingMaterial = true;
+            }
+        }
+        else if (otherCollider.gameObject == designatedBuilding)
+        {
+            designatedBuilding.GetComponent<Farm>().TakeConstructionMaterial();
+            IsCarryingMaterial = false;
+        }
     }
 }

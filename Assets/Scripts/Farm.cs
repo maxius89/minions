@@ -43,8 +43,14 @@ public class Farm : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= timeBetweenSpawnsInSeconds)
         {
-            currentResource = Instantiate(resource, transform.position, transform.rotation);
+            var zDisplacement = new Vector3(0, 0, -1);
+            currentResource = Instantiate(resource, transform.position + zDisplacement, transform.rotation);
             timer = 0;
         }
+    }
+
+    public void TakeConstructionMaterial()
+    {
+        constructionProgress++;
     }
 }

@@ -50,14 +50,4 @@ public class Minion : MonoBehaviour
     {
         return energy / maxEnergy;
     }
-
-    private void OnTriggerEnter2D(Collider2D otherCollider)
-    {
-        if (otherCollider.gameObject.GetComponent<Base>() == MyBase)
-        {
-            MyBase.TakeResources(resources);
-            resources = 0;
-            energy = maxEnergy;
-        }
-    }
 }

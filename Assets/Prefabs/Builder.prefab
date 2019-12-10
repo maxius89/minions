@@ -244,6 +244,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4c4cf65ee82ff443969802c7e6b72f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxVelocity: 500
-  angularVelocity: 500
+  maxVelocity: 2000
+  angularVelocity: 2000
   repulsionForce: 150

@@ -170,4 +170,14 @@ public class Collector : Minion
 
         TargetPosition = new Vector2(Random.Range(-xLim, xLim), Random.Range(-yLim, yLim));
     }
+
+    private void OnTriggerEnter2D(Collider2D otherCollider)
+    {
+        if (otherCollider.gameObject.GetComponent<Base>() == MyBase)
+        {
+            MyBase.TakeResources(resources);
+            resources = 0;
+            energy = maxEnergy;
+        }
+    }
 }
