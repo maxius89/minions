@@ -51,8 +51,7 @@ public class Base : MonoBehaviour
 
     private void HandleContstrucions()
     {
-        var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
-        if (!IsThereOngoingConstruction() && !currentConstructionZone.IsZoneFull())
+        if (!IsThereOngoingConstruction() && !IsAvailableConstructionSpace())
         {
             var newConstructionPosition = SelectNewConstuctionPosition();
 
@@ -60,7 +59,14 @@ public class Base : MonoBehaviour
                 Quaternion.identity, buildingsParent.transform);
             newFarm.GetComponent<Farm>().MyBase = this;
         }
+    }
 
+    private bool IsAvailableConstructionSpace()
+    {
+        var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
+
+        if (currentConstructionZone) { return !currentConstructionZone.IsZoneFull(); }
+        else { return false; }
     }
 
     private bool IsThereOngoingConstruction()

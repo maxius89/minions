@@ -16,6 +16,14 @@ public class ConstructionZone : MonoBehaviour
         numberOfBuildings = 0;
     }
 
+    public Vector3 CalculatePositionInWorld(int indexOfBuilding)
+    {
+        var displacement = CalculatePositionInZone(indexOfBuilding);
+        var startingPoint = CalculateStartingPoint();
+
+        return startingPoint + displacement;
+    }
+
     public bool IsZoneFull()
     {
         return CalculateMaxNumberOfBuildings() <= numberOfBuildings;
@@ -46,7 +54,7 @@ public class ConstructionZone : MonoBehaviour
 
     private Vector2 GetNextCellPosition(int indexOfBuilding)
     {
-        CalculateGridLimits(out int xLimit, out int yLimit);
+        CalculateGridLimits(out int xLimit, out _);
 
         int xPos = indexOfBuilding % xLimit;
         int yPos = Mathf.FloorToInt(indexOfBuilding / xLimit);
@@ -64,16 +72,12 @@ public class ConstructionZone : MonoBehaviour
                 0);
     }
 
-    public Vector3 CalculatePositionInWorld(int indexOfBuilding)
+    private Vector3 CalculateStartingPoint()
     {
         var zoneCenter = GetComponent<BoxCollider2D>();
-        Vector3 displacement = CalculatePositionInZone(indexOfBuilding);
-
-        Vector3 startingPoint = new Vector3(
-            zoneCenter.transform.position.x - zoneCenter.size.x / 2,
-            zoneCenter.transform.position.y - zoneCenter.size.y / 2,
-            0);
-
-        return startingPoint + displacement;
+        return new Vector3(
+                zoneCenter.transform.position.x - zoneCenter.size.x / 2,
+                zoneCenter.transform.position.y - zoneCenter.size.y / 2,
+                0);
     }
 }
