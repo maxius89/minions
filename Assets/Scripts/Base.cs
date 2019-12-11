@@ -51,56 +51,44 @@ public class Base : MonoBehaviour
 
     private void HandleContstrucions()
     {
+        var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
+        if (!IsThereOngoingConstruction() && !currentConstructionZone.IsZoneFull())
+        {
+            var newConstructionPosition = SelectNewConstuctionPosition();
+
+            var newFarm = Instantiate(farm, newConstructionPosition,
+                Quaternion.identity, buildingsParent.transform);
+            newFarm.GetComponent<Farm>().MyBase = this;
+        }
+
+    }
+
+    private bool IsThereOngoingConstruction()
+    {
         bool isThereOngoingConstrucion = false;
         foreach (Transform child in buildingsParent.transform)
         {
             var farm = child.GetComponent<Farm>();
-            if (!farm.IsBuilingComplete) 
+            if (!farm.IsBuilingComplete)
             {
                 isThereOngoingConstrucion = true;
                 break;
             }
         }
 
-        if (!isThereOngoingConstrucion)
-        {
-            var newConstructionPosition = SelectNewConstuctionPosition();
-
-            var newFarm = Instantiate(farm, newConstructionPosition,
-                Quaternion.identity, buildingsParent.transform);
-            newFarm.GetComponent<Farm>().MyBase = this; 
-        }
-
+        return isThereOngoingConstrucion;
     }
 
     private Vector3 SelectNewConstuctionPosition()
     {
-        int numOfCurrentBuildings = buildingsParent.transform.childCount;
+        int indexOfNextBuilding = buildingsParent.transform.childCount;
         const int xGap = 30;
         const int yGap = 30;
 
-        var farmWidth = farm.GetComponent<BoxCollider2D>().size.x;
-        var farmHeight = farm.GetComponent<BoxCollider2D>().size.y;
+        var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
+        currentConstructionZone.GapSize = new Vector2(xGap, yGap);
 
-        var box = transform.Find(cConstructionZone).GetComponent<BoxCollider2D>();
-
-        int xLimit = Mathf.FloorToInt((box.size.x + xGap) / (farmWidth + xGap));
-        int yLimit = Mathf.FloorToInt((box.size.y + yGap) / (farmHeight + yGap));
-
-        int xPosInGrid = numOfCurrentBuildings % xLimit;
-        int yPosInGrid = Mathf.FloorToInt(numOfCurrentBuildings / xLimit);
-
-        Vector3 displacement = new Vector3(
-            (1+xPosInGrid) * farmWidth + xPosInGrid * xGap,
-            (1+yPosInGrid) * farmHeight + yPosInGrid * yGap,
-            0);
-
-        Vector3 startingPoint = new Vector3(
-            box.transform.position.x - box.size.x / 2,
-            box.transform.position.y - box.size.y / 2,
-            0);
-
-        return startingPoint + displacement;
+        return currentConstructionZone.CalculatePositionInWorld(indexOfNextBuilding);
     }
 
     public GameObject GetCurrentConstruction()
@@ -158,16 +146,22 @@ public class Base : MonoBehaviour
     private void DesignateConstructionZone()
     {
         bool closerToLeft = transform.position.x <= 0;
-        bool closerToBottom = transform.position.y <= 0;
         int xPos = closerToLeft ? 500 : -500;
-        int yPos = 0; //closerToBottom ? 500 : -500;
+        int yPos = 0;
 
         Vector3 displacement = new Vector2(xPos, yPos);
         Vector2 size = new Vector2(400, 300);
 
-        var newZone = Instantiate(constructionZone, transform.position + displacement, Quaternion.identity, this.transform);
+        var newZone = Instantiate(constructionZone, transform.position + displacement, Quaternion.identity, transform);
         newZone.GetComponent<BoxCollider2D>().size = size;
+        newZone.GetComponent<ConstructionZone>().BuildingType = farm;
         newZone.name = cConstructionZone;
+    }
+
+    internal void SignConstructionComplete()
+    {
+        var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
+        currentConstructionZone.BuildingFinished();
     }
 
     public void TakeResources(int num)

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3753776266093837225}
   - component: {fileID: 3829758944769184374}
+  - component: {fileID: 6236448328767176922}
   m_Layer: 0
   m_Name: Construction Zone
   m_TagString: Untagged
@@ -57,3 +58,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 200, y: 200}
   m_EdgeRadius: 0
+--- !u!114 &6236448328767176922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4961689523833292741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8646515ac40d27b4ba56becca045bfb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

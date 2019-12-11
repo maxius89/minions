@@ -30,6 +30,7 @@ public class Farm : MonoBehaviour
             {
                 IsBuilingComplete = true;
                 GetComponent<SpriteRenderer>().color = Color.white;
+                MyBase.SignConstructionComplete();
             }
         }
         else if (!currentResource)

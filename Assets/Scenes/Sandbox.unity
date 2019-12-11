@@ -208,6 +208,17 @@ PrefabInstance:
       propertyPath: teamColor.b
       value: 0.972549
       objectReference: {fileID: 0}
+    - target: {fileID: 2276734256446857575, guid: b066a4813b690cd44b972a3fc3bb0853,
+        type: 3}
+      propertyPath: constructionZone
+      value: 
+      objectReference: {fileID: 4961689523833292741, guid: a780bad9f76d31f4b9c4f74f9055f49a,
+        type: 3}
+    - target: {fileID: 2276734256446857575, guid: b066a4813b690cd44b972a3fc3bb0853,
+        type: 3}
+      propertyPath: resources
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6904405332426124453, guid: b066a4813b690cd44b972a3fc3bb0853,
         type: 3}
       propertyPath: m_Name
@@ -216,7 +227,7 @@ PrefabInstance:
     - target: {fileID: 6904405332426124453, guid: b066a4813b690cd44b972a3fc3bb0853,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8121994510078679531, guid: b066a4813b690cd44b972a3fc3bb0853,
         type: 3}
@@ -493,17 +504,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2276734256446857575, guid: b066a4813b690cd44b972a3fc3bb0853,
-        type: 3}
-      propertyPath: resources
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2276734256446857575, guid: b066a4813b690cd44b972a3fc3bb0853,
-        type: 3}
-      propertyPath: constructionZone
-      value: 
-      objectReference: {fileID: 4961689523833292741, guid: a780bad9f76d31f4b9c4f74f9055f49a,
-        type: 3}
     - target: {fileID: 6904405332426124453, guid: b066a4813b690cd44b972a3fc3bb0853,
         type: 3}
       propertyPath: m_Name
@@ -665,7 +665,7 @@ PrefabInstance:
     - target: {fileID: 8024856141874554901, guid: 86da805cb947c5347bae4c71f2c329f0,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8024856141874554902, guid: 86da805cb947c5347bae4c71f2c329f0,
         type: 3}

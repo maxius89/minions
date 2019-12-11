@@ -73,7 +73,7 @@ public class Builder : Minion
     {
        designatedBuilding = MyBase.GetCurrentConstruction();
 
-        if(IsCarryingMaterial)
+        if(IsCarryingMaterial && designatedBuilding)
         {
             TargetPosition = designatedBuilding.transform.position;
         }
