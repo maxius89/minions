@@ -3,7 +3,14 @@ guid: 5cd28244c778c84428c1a16af7d4d9e9
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - collector: {fileID: 5693859859307368770, guid: 394abc59c5e21b741ae9870df07e6eea,
+      type: 3}
+  - builder: {fileID: 5921618077059263162, guid: 8e4904555405ed8468f1717027c4e57a,
+      type: 3}
+  - farm: {fileID: 5472352041178419648, guid: f8f1c6dc55569ae44930bf0ff487a6ec, type: 3}
+  - constructionZone: {fileID: 4961689523833292741, guid: a780bad9f76d31f4b9c4f74f9055f49a,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
