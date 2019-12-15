@@ -33,8 +33,7 @@ public class Spawner : MonoBehaviour
             int yLim = Screen.currentResolution.height / 2;
             Vector3 targetPosition = new Vector3(Random.Range(-xLim, xLim), Random.Range(-yLim, yLim), 0);
 
-            GameObject newResource = Instantiate(resource, targetPosition, Quaternion.identity);
-            newResource.transform.parent = resourceParent.transform;
+            Instantiate(resource, targetPosition, Quaternion.identity, resourceParent.transform);
             yield return new WaitForSeconds(resourceSpawnTimerInSeconds);
         }
     }

@@ -14,12 +14,17 @@ public class Farm : MonoBehaviour
     private float timer;
     private int constructionProgress;
 
+    GameObject resourceParent;
+    const string cResourceParentName = "Resources";
+
     void Start()
     {
         IsBuilingComplete = false;
         GetComponent<SpriteRenderer>().color = MyBase.TeamColor;
         constructionProgress = 0;
         timer = 0;
+
+        CreateResourceParent();
     }
 
     void Update()
@@ -45,7 +50,8 @@ public class Farm : MonoBehaviour
         if (timer >= timeBetweenSpawnsInSeconds)
         {
             var zDisplacement = new Vector3(0, 0, -1);
-            currentResource = Instantiate(resource, transform.position + zDisplacement, transform.rotation);
+            currentResource = Instantiate(resource, transform.position + zDisplacement, 
+                transform.rotation, resourceParent.transform);
             timer = 0;
         }
     }
@@ -53,5 +59,14 @@ public class Farm : MonoBehaviour
     public void TakeConstructionMaterial()
     {
         constructionProgress++;
+    }
+
+    private void CreateResourceParent()
+    {
+        resourceParent = GameObject.Find(cResourceParentName);
+        if (!resourceParent)
+        {
+            resourceParent = new GameObject(cResourceParentName);
+        }
     }
 }

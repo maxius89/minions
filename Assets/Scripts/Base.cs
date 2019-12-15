@@ -32,26 +32,41 @@ public class Base : MonoBehaviour
 
     private void Update()
     {
-        HandleContstrucions();
+        HandleConstructions();
+        HandleMinionSpawning();
+    }
 
-        // TODO: Create decision making
-        if (resources >= minionCost)
+    private void HandleMinionSpawning()
+    {
+        if (resources < minionCost)
         {
-            int randomSpawn = UnityEngine.Random.Range(0, 2);
-            if (randomSpawn == 0)
+            return;
+        }
+
+        int numberOfResources = FindObjectsOfType<Resource>().Length;
+        int numberOfCollectors = 0;
+        foreach (Transform child in minionsParent.transform)
+        {
+            if (child.GetComponent<Collector>())
             {
-                SpawnCollector();
+                numberOfCollectors++;
             }
-            else
-            {
-                SpawnBuilder();
-            }
+        }
+
+        bool areThereMoreResources = numberOfResources > numberOfCollectors;
+        if (areThereMoreResources)
+        {
+            SpawnCollector();
+        }
+        else
+        {
+            SpawnBuilder();
         }
     }
 
-    private void HandleContstrucions()
+    private void HandleConstructions()
     {
-        if (!IsThereOngoingConstruction() && !IsAvailableConstructionSpace())
+        if (!IsThereOngoingConstruction() && IsAvailableConstructionSpace())
         {
             var newConstructionPosition = SelectNewConstuctionPosition();
 
