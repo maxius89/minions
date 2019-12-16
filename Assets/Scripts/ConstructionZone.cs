@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,24 +10,58 @@ public class ConstructionZone : MonoBehaviour
     public Vector2 GapSize { get; set; }
 
     private int numberOfBuildings;
+    private List<Vector3> emptyGridCells;
 
     void Start()
     {
-        Size = GetComponent<BoxCollider2D>().size;
         numberOfBuildings = 0;
+        Size = GetComponent<BoxCollider2D>().size;
+
+        CalculateGridCells();
+        SortCellsByDistanceToParent();
     }
 
-    public Vector3 CalculatePositionInWorld(int indexOfBuilding)
+    private void CalculateGridCells()
     {
-        var displacement = CalculatePositionInZone(indexOfBuilding);
-        var startingPoint = CalculateStartingPoint();
+        emptyGridCells = new List<Vector3>();
+        var gridOrigin = CalculateStartingPoint();
+        var buildingSize = GetBuildingSize();
+        CalculateGridLimits(out int xLimit, out int yLimit);
 
-        return startingPoint + displacement;
+        for (int xIndex = 0; xIndex < xLimit; xIndex++)
+        {
+            for (int yIndex = 0; yIndex < yLimit; yIndex++)
+            {
+                var xPos = (1 + xIndex) * buildingSize.x + xIndex * GapSize.x;
+                var yPos = (1 + yIndex) * buildingSize.y + yIndex * GapSize.y;
+                emptyGridCells.Add(new Vector3(xPos, yPos, 0) + gridOrigin);
+            }
+        }
+    }
+
+    private void SortCellsByDistanceToParent()
+    {
+        if (!transform.parent) { return; }
+        var baseCoordinates = transform.parent.position;
+        emptyGridCells = emptyGridCells.OrderBy(x => Vector3.Distance(baseCoordinates, x)).ToList();
+    }
+
+    public Vector3 CalculatePositionInWorld()
+    {
+        var position = emptyGridCells.First();
+        emptyGridCells.Remove(emptyGridCells.First());
+        return position;
     }
 
     public bool IsZoneFull()
     {
         return CalculateMaxNumberOfBuildings() <= numberOfBuildings;
+    }
+
+    private int CalculateMaxNumberOfBuildings()
+    {
+        CalculateGridLimits(out int xLimit, out int yLimit);
+        return xLimit * yLimit;
     }
 
     public void BuildingFinished()
@@ -39,37 +74,11 @@ public class ConstructionZone : MonoBehaviour
         return BuildingType.GetComponent<BoxCollider2D>().size;
     }
 
-    private int CalculateMaxNumberOfBuildings()
-    {
-        CalculateGridLimits(out int xLimit, out int yLimit);
-        return xLimit * yLimit;
-    }
-
     private void CalculateGridLimits(out int xLimit, out int yLimit)
     {
         var buildingSize = GetBuildingSize();
         xLimit = Mathf.FloorToInt((Size.x + GapSize.x) / (buildingSize.x + GapSize.x));
         yLimit = Mathf.FloorToInt((Size.y + GapSize.y) / (buildingSize.y + GapSize.y));
-    }
-
-    private Vector2 GetNextCellPosition(int indexOfBuilding)
-    {
-        CalculateGridLimits(out int xLimit, out _);
-
-        int xPos = indexOfBuilding % xLimit;
-        int yPos = Mathf.FloorToInt(indexOfBuilding / xLimit);
-
-        return new Vector2(xPos, yPos);
-    }
-
-    private Vector3 CalculatePositionInZone(int indexOfBuilding)
-    {
-        var cellIndex = GetNextCellPosition(indexOfBuilding);
-        var buildingSize = GetBuildingSize();
-        return new Vector3(
-                (1 + cellIndex.x) * buildingSize.x + cellIndex.x * GapSize.x,
-                (1 + cellIndex.y) * buildingSize.y + cellIndex.y * GapSize.y,
-                0);
     }
 
     private Vector3 CalculateStartingPoint()

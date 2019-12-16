@@ -102,14 +102,8 @@ public class Base : MonoBehaviour
 
     private Vector3 SelectNewConstuctionPosition()
     {
-        int indexOfNextBuilding = buildingsParent.transform.childCount;
-        const int xGap = 30;
-        const int yGap = 30;
-
         var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
-        currentConstructionZone.GapSize = new Vector2(xGap, yGap);
-
-        return currentConstructionZone.CalculatePositionInWorld(indexOfNextBuilding);
+        return currentConstructionZone.CalculatePositionInWorld();
     }
 
     public GameObject GetCurrentConstruction()
@@ -170,11 +164,16 @@ public class Base : MonoBehaviour
         int xPos = closerToLeft ? 500 : -500;
         int yPos = 0;
 
+        const int xGap = 30;
+        const int yGap = 30;
+
         Vector3 displacement = new Vector2(xPos, yPos);
         Vector2 size = new Vector2(400, 300);
+        Vector2 gapSize = new Vector2(xGap, yGap);
 
         var newZone = Instantiate(constructionZone, transform.position + displacement, Quaternion.identity, transform);
         newZone.GetComponent<BoxCollider2D>().size = size;
+        newZone.GetComponent<ConstructionZone>().GapSize = gapSize;
         newZone.GetComponent<ConstructionZone>().BuildingType = farm;
         newZone.name = cConstructionZone;
     }

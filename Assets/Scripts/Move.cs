@@ -10,7 +10,6 @@ public class Move : MonoBehaviour
 
     private Vector3 targetPosition;
     private float velocity;
-    private readonly float distanceThreshold = 10.0f;
 
     void Start()
     {
