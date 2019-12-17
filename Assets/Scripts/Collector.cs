@@ -19,7 +19,6 @@ public class Collector : Minion
 
     protected override void Initailze()
     {
-        energy = maxEnergy;
         currentState = CollectorState.Collect;
 
         FindRandomTargetLocation();
@@ -176,8 +175,8 @@ public class Collector : Minion
         if (otherCollider.gameObject.GetComponent<Base>() == MyBase)
         {
             MyBase.TakeResources(resources);
+            Energy.FillToMaximum();
             resources = 0;
-            energy = maxEnergy;
         }
     }
 }

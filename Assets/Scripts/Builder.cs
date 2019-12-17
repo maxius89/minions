@@ -19,7 +19,6 @@ public class Builder : Minion
 
     protected override void Initailze()
     {
-        energy = maxEnergy;
         currentState = BuilderState.Wander;
 
         GetComponent<SpriteRenderer>().color = MyBase.TeamColor;
@@ -81,8 +80,6 @@ public class Builder : Minion
         {
             TargetPosition = MyBase.transform.position;
         }
-
-       
     }
 
     private void FindRandomTargetLocation()
@@ -97,7 +94,7 @@ public class Builder : Minion
     {
         if (otherCollider.gameObject.GetComponent<Base>() == MyBase)
         {
-            energy = maxEnergy;
+            Energy.FillToMaximum();
 
             if (designatedBuilding)
             {

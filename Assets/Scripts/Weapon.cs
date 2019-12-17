@@ -9,8 +9,7 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
-        var parentTransform = transform.parent;
-        parent = parentTransform.GetComponent<Minion>();
+        parent = transform.parent.GetComponent<Minion>();
     }
 
     private void OnCollisionEnter2D(Collision2D otherCollider)

@@ -11,7 +11,7 @@ public class DirectionArrow : MonoBehaviour
 
     private void SetSpriteColor()
     {
-        var energyCoeff = transform.parent.GetComponent<Minion>().GetEnergyCoeff();
+        var energyCoeff = transform.parent.GetComponent<Minion>().Energy.EnergyCoeff;
         float red = 1 - energyCoeff;
         float green = 1 - energyCoeff;
         float blue = 1 - energyCoeff;

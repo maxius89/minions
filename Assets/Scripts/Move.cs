@@ -20,7 +20,7 @@ public class Move : MonoBehaviour
     void Update()
     {
         var minion = GetComponent<Minion>();
-        velocity = maxVelocity * minion.GetEnergyCoeff();
+        velocity = maxVelocity * minion.Energy.EnergyCoeff;
         targetPosition = minion.TargetPosition;
         MoveTowardTarget();
     }

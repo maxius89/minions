@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Farm : MonoBehaviour
 {
-    [SerializeField] private int costOfConstruction;
-    [SerializeField] private float timeBetweenSpawnsInSeconds;
-    [SerializeField] GameObject resource;
+    [SerializeField] private int costOfConstruction = 0;
+    [SerializeField] private float timeBetweenSpawnsInSeconds = 0.0f;
+    [SerializeField] private GameObject resource = null;
 
     public Base MyBase { get; set; }
     public bool IsBuilingComplete { get; private set; }
-    GameObject currentResource;
+    private GameObject currentResource;
     private float timer;
     private int constructionProgress;
 
-    GameObject resourceParent;
-    const string cResourceParentName = "Resources";
+    private GameObject resourceParent;
+    private const string cResourceParentName = "Resources";
 
     void Start()
     {

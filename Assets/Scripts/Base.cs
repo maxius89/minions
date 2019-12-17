@@ -6,12 +6,12 @@ using UnityEngine;
 public class Base : MonoBehaviour
 {
     [SerializeField] private int resources = 0;
-    [SerializeField] GameObject collector;
-    [SerializeField] GameObject builder;
-    [SerializeField] GameObject farm;
-    [SerializeField] GameObject constructionZone;
-    [SerializeField] int minionCost = 30;
-    [SerializeField] private Color teamColor;
+    [SerializeField] private GameObject collector = null;
+    [SerializeField] private GameObject builder = null;
+    [SerializeField] private GameObject farm = null;
+    [SerializeField] private GameObject constructionZone = null;
+    [SerializeField] private int minionCost = 30;
+    [SerializeField] private Color teamColor = Color.white;
 
     public Color TeamColor { get { return teamColor; } }
     private GameObject minionsParent;

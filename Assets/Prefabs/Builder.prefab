@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 8271950422506569438}
   - component: {fileID: 5921618077059263161}
   - component: {fileID: 2651111066561615904}
+  - component: {fileID: 8340018069609771065}
   m_Layer: 0
   m_Name: Builder
   m_TagString: Untagged
@@ -247,3 +248,18 @@ MonoBehaviour:
   maxVelocity: 400
   angularVelocity: 500
   repulsionForce: 50
+--- !u!114 &8340018069609771065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5921618077059263162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 572faf9b846fe0e45a0551f196a01b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  energy: 0
+  maxEnergy: 100
+  energyDepletionRate: 1

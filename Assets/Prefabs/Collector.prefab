@@ -107,8 +107,9 @@ GameObject:
   - component: {fileID: 8062191063535469862}
   - component: {fileID: -5051960832242867240}
   - component: {fileID: 5905889558920048081}
+  - component: {fileID: 2014320472046855966}
   m_Layer: 0
-  m_Name: Minion
+  m_Name: Collector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -249,3 +250,18 @@ MonoBehaviour:
   rangeOfSight: 800
   attackRange: 200
   weapon: {fileID: 1893107175687457359, guid: ae31149f7a157194c81c3a915b6c7a3d, type: 3}
+--- !u!114 &2014320472046855966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5693859859307368770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 572faf9b846fe0e45a0551f196a01b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  energy: 0
+  maxEnergy: 100
+  energyDepletionRate: 1

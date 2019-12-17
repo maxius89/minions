@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] GameObject resource;
-    [SerializeField] float resourceSpawnTimerInSeconds = 3.0f;
+    [SerializeField] private GameObject resource = null;
+    [SerializeField] private float resourceSpawnTimerInSeconds = 3.0f;
 
-    GameObject resourceParent;
-    const string cResourceParentName = "Resources";
+    private GameObject resourceParent;
+    private const string cResourceParentName = "Resources";
 
     void Start()
     {
