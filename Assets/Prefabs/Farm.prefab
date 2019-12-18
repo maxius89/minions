@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5472352041178419679}
   - component: {fileID: 5472352041178419678}
   - component: {fileID: 5472352041178419649}
+  - component: {fileID: -7111319850241480118}
   - component: {fileID: -7012511868264851347}
   - component: {fileID: 504876526292997746}
   m_Layer: 0
@@ -99,6 +100,21 @@ MonoBehaviour:
   timeBetweenSpawnsInSeconds: 1
   resource: {fileID: 7690720039163848595, guid: 080d43a0d2da9f44998902f1891beb7a,
     type: 3}
+--- !u!114 &-7111319850241480118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5472352041178419648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 572faf9b846fe0e45a0551f196a01b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  energy: 0
+  maxEnergy: 100
+  energyDepletionRate: 1
 --- !u!61 &-7012511868264851347
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -35,4 +35,9 @@ public class Energy : MonoBehaviour
     {
         energy -= num;
     }
+
+    public void Add(float num)
+    {
+        energy += num;
+    }
 }

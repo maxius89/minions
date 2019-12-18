@@ -229,10 +229,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxResourcesToCarry: 15
-  energy: 0
-  maxEnergy: 100
-  energyDepletionRate: 1
   rangeOfSight: 300
+  repairValue: 10
 --- !u!114 &2651111066561615904
 MonoBehaviour:
   m_ObjectHideFlags: 0

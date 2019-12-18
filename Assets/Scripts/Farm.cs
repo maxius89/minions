@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class Farm : MonoBehaviour
     [SerializeField] private GameObject resource = null;
 
     public Base MyBase { get; set; }
+    public Energy Energy => GetComponent<Energy>();
     public bool IsBuilingComplete { get; private set; }
     private GameObject currentResource;
     private float timer;
@@ -29,19 +31,34 @@ public class Farm : MonoBehaviour
 
     void Update()
     {
-        if (!IsBuilingComplete)
+        if (IsBuilingComplete)
         {
-            if (constructionProgress >= costOfConstruction)
-            {
-                IsBuilingComplete = true;
-                GetComponent<SpriteRenderer>().color = Color.white;
-                MyBase.SignConstructionComplete();
-            }
-        }
-        else if (!currentResource)
-        {
+            CheckEnergyState();
+
+            if (currentResource) { return; }
             GenerateResource();
         }
+        else
+        {
+            CheckConstructionState();
+        }
+    }
+
+    private void CheckEnergyState()
+    {
+        if (Energy.EnergyCoeff < 0.3)
+        {
+            MyBase.SignMaintenanceNeeded(this);
+        }
+    }
+
+    private void CheckConstructionState()
+    {
+        if (constructionProgress < costOfConstruction) { return; }
+
+        IsBuilingComplete = true;
+        GetComponent<SpriteRenderer>().color = Color.white;
+        MyBase.SignConstructionComplete();
     }
 
     private void GenerateResource()

@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class Builder : Minion
 {
+    [SerializeField] private float repairValue = 0;
     protected BuilderState currentState;
-    private GameObject designatedBuilding;
+
+    public GameObject DesignatedConstruction { get; set; }
+    public GameObject DesignatedMaintenance { get; set; }
     public bool IsCarryingMaterial { get; set; }
     public enum BuilderState
     {
@@ -39,21 +42,19 @@ public class Builder : Minion
     {
         FindRandomTargetLocation();
 
-        if (IsConstructionAvailable())
+        if (IsBuildingNeedsMaintenance())
+        {
+            currentState = BuilderState.Maintain;
+        }
+        else if (IsConstructionAvailable())
         {
             currentState = BuilderState.Build;
         }
-        //else if (IsBuildingNeedsMaintianance())
-        //{
-        //    currentState = BuilderState.Maintain;
-        //
-        //}
-
     }
 
-    private bool IsBuildingNeedsMaintianance()
+    private bool IsBuildingNeedsMaintenance()
     {
-        throw new NotImplementedException();
+       return MyBase.IsBuildingNeedsMaintenance();
     }
 
     private bool IsConstructionAvailable() => MyBase.GetCurrentConstruction();
@@ -65,20 +66,49 @@ public class Builder : Minion
 
     private void UpdateMaintain()
     {
-        throw new NotImplementedException();
+        MyBase.DesignateMaintenance(this);
+
+        bool isRepaired = true;
+        if (DesignatedMaintenance)
+        {
+            TargetPosition = DesignatedMaintenance.transform.position;
+            isRepaired = DesignatedMaintenance.GetComponent<Energy>().EnergyCoeff > 0.6;
+        }
+ 
+        if (isRepaired && IsConstructionAvailable())
+        {
+            DesignatedMaintenance = null;
+            currentState = BuilderState.Build;
+        }
+        else if (isRepaired)
+        {
+            DesignatedMaintenance = null;
+            currentState = BuilderState.Wander;
+        }
     }
 
     private void UpdateBuild()
     {
-       designatedBuilding = MyBase.GetCurrentConstruction();
+       DesignatedConstruction = MyBase.GetCurrentConstruction();
 
-        if(IsCarryingMaterial && designatedBuilding)
+        if(IsCarryingMaterial && DesignatedConstruction)
         {
-            TargetPosition = designatedBuilding.transform.position;
+            TargetPosition = DesignatedConstruction.transform.position;
         }
         else
         {
             TargetPosition = MyBase.transform.position;
+        }
+
+        if (IsBuildingNeedsMaintenance())
+        {
+            DesignatedConstruction = null;
+            currentState = BuilderState.Maintain;
+        }
+        else if (!IsConstructionAvailable())
+        {
+            DesignatedConstruction = null;
+            currentState = BuilderState.Wander;
         }
     }
 
@@ -96,15 +126,19 @@ public class Builder : Minion
         {
             Energy.FillToMaximum();
 
-            if (designatedBuilding)
+            if (DesignatedConstruction)
             {
                 IsCarryingMaterial = true;
             }
         }
-        else if (otherCollider.gameObject == designatedBuilding)
+        else if (otherCollider.gameObject == DesignatedConstruction && currentState == BuilderState.Build)
         {
-            designatedBuilding.GetComponent<Farm>().TakeConstructionMaterial();
+            DesignatedConstruction.GetComponent<Farm>().TakeConstructionMaterial();
             IsCarryingMaterial = false;
+        }
+        else if (otherCollider.gameObject == DesignatedMaintenance && currentState == BuilderState.Maintain)
+        {
+            DesignatedMaintenance.GetComponent<Energy>().Add(repairValue);
         }
     }
 }

@@ -14,6 +14,7 @@ public class Base : MonoBehaviour
     [SerializeField] private Color teamColor = Color.white;
 
     public Color TeamColor { get { return teamColor; } }
+    public List<Farm> maintenanceRequests;
     private GameObject minionsParent;
     private GameObject buildingsParent;
     private const string cMinionsParentName = "Minions";
@@ -182,6 +183,55 @@ public class Base : MonoBehaviour
     {
         var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
         currentConstructionZone.BuildingFinished();
+    }
+
+    internal void SignMaintenanceNeeded(Farm building)
+    {
+        if (!maintenanceRequests.Contains(building))
+        { maintenanceRequests.Add(building); }
+    }
+
+    internal void DesignateMaintenance(Builder builder)
+    {
+        if (maintenanceRequests.Count == 0) { return; }
+
+        foreach (var target in maintenanceRequests)
+        {
+            Builder designatedBuilder = FindClosestBuilderTo(target.transform.position);
+            if (builder == designatedBuilder && !builder.DesignatedMaintenance)
+            {
+                builder.DesignatedMaintenance = target.gameObject;
+                maintenanceRequests.Remove(target);
+                return;
+            }
+        }
+    }
+
+    private Builder FindClosestBuilderTo(Vector3 position)
+    {
+        Builder designatedBuilder = null;
+        float minDistance = float.MaxValue;
+
+        foreach (Transform child in minionsParent.transform)
+        {
+            var builder = child.GetComponent<Builder>();
+            if (builder)
+            {
+                var distance = Vector3.Distance(child.position, position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    designatedBuilder = builder;
+                }
+            }
+        }
+
+        return designatedBuilder;
+    }
+
+    internal bool IsBuildingNeedsMaintenance()
+    {
+        return maintenanceRequests.Count > 0;
     }
 
     public void TakeResources(int num)
