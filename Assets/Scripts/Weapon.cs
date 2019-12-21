@@ -12,14 +12,14 @@ public class Weapon : MonoBehaviour
         parent = transform.parent.GetComponent<Minion>();
     }
 
-    private void OnCollisionEnter2D(Collision2D otherCollider)
+    private void OnCollisionStay2D(Collision2D otherCollider)
     {
         var otherMinion = otherCollider.gameObject.GetComponent<Minion>();
         if (!otherMinion) return;
 
         if (otherMinion.MyBase != parent.MyBase)
         {
-            otherMinion.TakeDamage(damage);
+            otherMinion.TakeDamage(damage * Time.deltaTime);
         }
     }
 

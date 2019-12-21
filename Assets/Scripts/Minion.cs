@@ -7,11 +7,13 @@ public class Minion : MonoBehaviour
 {
     [SerializeField] protected int maxResourcesToCarry = 15;
     [SerializeField] protected float rangeOfSight = 300.0f;
+    [SerializeField] protected float weight = 1.0f;
     protected int resources = 0;
 
     public Vector3 TargetPosition { get; protected set; }
     public Base MyBase { get; set; }
     public Energy Energy => GetComponent<Energy>();
+    public float Weight { get { return weight; } }
 
     protected virtual void Initailze() { }
     protected virtual void UpdateFSM() { }

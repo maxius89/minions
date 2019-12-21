@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   costOfConstruction: 10
-  timeBetweenSpawnsInSeconds: 1
+  timeBetweenSpawnsInSeconds: 10
   resource: {fileID: 7690720039163848595, guid: 080d43a0d2da9f44998902f1891beb7a,
     type: 3}
 --- !u!114 &-7111319850241480118
@@ -114,7 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   energy: 0
   maxEnergy: 100
-  energyDepletionRate: 1
+  energyDepletionRate: 2
 --- !u!61 &-7012511868264851347
 BoxCollider2D:
   m_ObjectHideFlags: 0

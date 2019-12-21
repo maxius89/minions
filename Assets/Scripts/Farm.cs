@@ -22,7 +22,7 @@ public class Farm : MonoBehaviour
     void Start()
     {
         IsBuilingComplete = false;
-        GetComponent<SpriteRenderer>().color = MyBase.TeamColor;
+        GetComponent<SpriteRenderer>().color =  SetStartingColor();
         constructionProgress = 0;
         timer = 0;
 
@@ -57,7 +57,7 @@ public class Farm : MonoBehaviour
         if (constructionProgress < costOfConstruction) { return; }
 
         IsBuilingComplete = true;
-        GetComponent<SpriteRenderer>().color = Color.white;
+        GetComponent<SpriteRenderer>().color = MyBase.TeamColor;
         MyBase.SignConstructionComplete();
     }
 
@@ -85,5 +85,16 @@ public class Farm : MonoBehaviour
         {
             resourceParent = new GameObject(cResourceParentName);
         }
+    }
+
+    private Color SetStartingColor()
+    {
+        Color baseColor = MyBase.TeamColor;
+        var red = baseColor.r * 0.75f;
+        var green = baseColor.g * 0.75f;
+        var blue = baseColor.b * 0.75f;
+        var alpha = 0.6f;
+
+        return new Color(red, green, blue, alpha);
     }
 }

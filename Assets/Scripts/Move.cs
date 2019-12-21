@@ -48,10 +48,11 @@ public class Move : MonoBehaviour
             Vector3 relativePosition = transform.position - minion.gameObject.transform.position;
             if (relativePosition.sqrMagnitude > Mathf.Epsilon)
             {
-                separation += relativePosition / (relativePosition.sqrMagnitude);
+                separation += relativePosition / (relativePosition.sqrMagnitude) * minion.Weight;
             }
         }
 
-        return separation * repulsionForce;
+        var energyCoeff = GetComponent<Minion>().Energy.EnergyCoeff;
+        return separation * repulsionForce * energyCoeff;
     }
 }

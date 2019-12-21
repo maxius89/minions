@@ -6,22 +6,24 @@ using UnityEngine;
 public class Builder : Minion
 {
     [SerializeField] private float repairValue = 0;
-    protected BuilderState currentState;
+    [SerializeField] protected BuilderState currentState;
 
     public GameObject DesignatedConstruction { get; set; }
     public GameObject DesignatedMaintenance { get; set; }
     public bool IsCarryingMaterial { get; set; }
+    public float idleCounter;
     public enum BuilderState
     {
         None,
         Build,
         Maintain,
-        ReturnHome,
+        SelfRecycle,
         Wander
     }
 
     protected override void Initailze()
     {
+        idleCounter = 0;
         currentState = BuilderState.Wander;
 
         GetComponent<SpriteRenderer>().color = MyBase.TeamColor;
@@ -33,7 +35,7 @@ public class Builder : Minion
         {
             case BuilderState.Build: UpdateBuild(); break;
             case BuilderState.Maintain: UpdateMaintain(); break;
-            case BuilderState.ReturnHome: UpdateReturnHome(); break;
+            case BuilderState.SelfRecycle: UpdateSelfRecycle(); break;
             case BuilderState.Wander: UpdateWander(); break;
         }
     }
@@ -41,33 +43,33 @@ public class Builder : Minion
     private void UpdateWander()
     {
         FindRandomTargetLocation();
+        idleCounter += Time.deltaTime;
 
-        if (IsBuildingNeedsMaintenance())
+        if (idleCounter > 5.0f || Energy.EnergyCoeff < 0.6f)
+        {
+            currentState = BuilderState.SelfRecycle;
+        }
+        else if (MyBase.DesignateMaintenance(this))
         {
             currentState = BuilderState.Maintain;
+            idleCounter = 0;
         }
         else if (IsConstructionAvailable())
         {
             currentState = BuilderState.Build;
-        }
-    }
-
-    private bool IsBuildingNeedsMaintenance()
-    {
-       return MyBase.IsBuildingNeedsMaintenance();
+            idleCounter = 0;
+        }       
     }
 
     private bool IsConstructionAvailable() => MyBase.GetCurrentConstruction();
 
-    private void UpdateReturnHome()
+    private void UpdateSelfRecycle()
     {
-        throw new NotImplementedException();
+        TargetPosition = MyBase.transform.position;
     }
 
     private void UpdateMaintain()
     {
-        MyBase.DesignateMaintenance(this);
-
         bool isRepaired = true;
         if (DesignatedMaintenance)
         {
@@ -100,7 +102,7 @@ public class Builder : Minion
             TargetPosition = MyBase.transform.position;
         }
 
-        if (IsBuildingNeedsMaintenance())
+        if (MyBase.DesignateMaintenance(this))
         {
             DesignatedConstruction = null;
             currentState = BuilderState.Maintain;
@@ -124,6 +126,12 @@ public class Builder : Minion
     {
         if (otherCollider.gameObject.GetComponent<Base>() == MyBase)
         {
+            if (currentState == BuilderState.SelfRecycle)
+            {
+                MyBase.TakeResources(20);
+                Destroy(gameObject);
+            }
+
             Energy.FillToMaximum();
 
             if (DesignatedConstruction)

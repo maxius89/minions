@@ -230,7 +230,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxResourcesToCarry: 15
   rangeOfSight: 300
+  weight: 0.3
   repairValue: 10
+  idleCounter: 0
 --- !u!114 &2651111066561615904
 MonoBehaviour:
   m_ObjectHideFlags: 0

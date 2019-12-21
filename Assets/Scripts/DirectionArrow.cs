@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class DirectionArrow : MonoBehaviour
 {
+    private void Start()
+    {
+        SetSpriteColor();
+    }
+
     void Update()
     {
         SetSpriteColor();

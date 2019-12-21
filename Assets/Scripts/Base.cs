@@ -35,6 +35,8 @@ public class Base : MonoBehaviour
     {
         HandleConstructions();
         HandleMinionSpawning();
+
+        maintenanceRequests.RemoveAll(item => item == null);
     }
 
     private void HandleMinionSpawning()
@@ -55,7 +57,8 @@ public class Base : MonoBehaviour
         }
 
         bool areThereMoreResources = numberOfResources > numberOfCollectors;
-        if (areThereMoreResources)
+        bool isBuilderNeeded = IsThereOngoingConstruction() || IsBuildingNeedsMaintenance();
+        if (areThereMoreResources || !isBuilderNeeded)
         {
             SpawnCollector();
         }
@@ -191,20 +194,24 @@ public class Base : MonoBehaviour
         { maintenanceRequests.Add(building); }
     }
 
-    internal void DesignateMaintenance(Builder builder)
+    internal bool DesignateMaintenance(Builder builder)
     {
-        if (maintenanceRequests.Count == 0) { return; }
+        if (maintenanceRequests.Count == 0) { return false; }
 
         foreach (var target in maintenanceRequests)
         {
+            if (!target) { continue; }
+
             Builder designatedBuilder = FindClosestBuilderTo(target.transform.position);
             if (builder == designatedBuilder && !builder.DesignatedMaintenance)
             {
                 builder.DesignatedMaintenance = target.gameObject;
                 maintenanceRequests.Remove(target);
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 
     private Builder FindClosestBuilderTo(Vector3 position)
