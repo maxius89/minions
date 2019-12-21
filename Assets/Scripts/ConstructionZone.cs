@@ -2,12 +2,14 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ConstructionZone : MonoBehaviour
 {
     public GameObject BuildingType { get; set; }
     public Vector2 Size { get; set; }
     public Vector2 GapSize { get; set; }
+    public int ZoneIndex { get; set; }
 
     private int numberOfBuildings;
     private List<Vector3> emptyGridCells;
@@ -34,6 +36,7 @@ public class ConstructionZone : MonoBehaviour
             {
                 var xPos = (1 + xIndex) * buildingSize.x + xIndex * GapSize.x;
                 var yPos = (1 + yIndex) * buildingSize.y + yIndex * GapSize.y;
+
                 emptyGridCells.Add(new Vector3(xPos, yPos, 0) + gridOrigin);
             }
         }
@@ -88,5 +91,48 @@ public class ConstructionZone : MonoBehaviour
                 zoneCenter.transform.position.x - zoneCenter.size.x / 2,
                 zoneCenter.transform.position.y - zoneCenter.size.y / 2,
                 0);
+    }
+
+    internal void HandleConstruction(Base newBase)
+    {
+        if (!IsThereOngoingConstruction() && !IsZoneFull())
+        {
+            var newConstructionPosition = CalculatePositionInWorld();
+
+            var newFarm = Instantiate(BuildingType, newConstructionPosition,
+                Quaternion.identity, transform);
+            newFarm.GetComponent<Farm>().MyBase = newBase;
+        }
+    }
+
+    public bool IsThereOngoingConstruction()
+    {
+        bool isThereOngoingConstrucion = false;
+
+        var farms = GetComponentsInChildren<Farm>();
+        foreach (var farm in farms)
+        {
+            if (!farm.IsBuilingComplete)
+            {
+                isThereOngoingConstrucion = true;
+                break;
+            }
+        }
+
+        return isThereOngoingConstrucion;
+    }
+
+    public GameObject GetCurrentConstruction()
+    {
+        var farms = GetComponentsInChildren<Farm>();
+        foreach (var farm in farms)
+        {
+            if (!farm.IsBuilingComplete)
+            {
+                return farm.gameObject;
+            }
+        }
+
+        return null;
     }
 }

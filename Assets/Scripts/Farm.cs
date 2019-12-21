@@ -58,7 +58,7 @@ public class Farm : MonoBehaviour
 
         IsBuilingComplete = true;
         GetComponent<SpriteRenderer>().color = MyBase.TeamColor;
-        MyBase.SignConstructionComplete();
+        MyBase.SignConstructionComplete(this);
     }
 
     private void GenerateResource()

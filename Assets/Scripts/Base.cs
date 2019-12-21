@@ -15,6 +15,7 @@ public class Base : MonoBehaviour
 
     public Color TeamColor { get { return teamColor; } }
     public List<Farm> maintenanceRequests;
+    private int zoneCounter;
     private GameObject minionsParent;
     private GameObject buildingsParent;
     private const string cMinionsParentName = "Minions";
@@ -23,6 +24,7 @@ public class Base : MonoBehaviour
 
     private void Start()
     {
+        zoneCounter = 0;
         var spriteRenderer = transform.Find("Base Sprite").gameObject;
         spriteRenderer.GetComponent<SpriteRenderer>().color = teamColor;
         CreateMinionsParentObject();
@@ -70,58 +72,37 @@ public class Base : MonoBehaviour
 
     private void HandleConstructions()
     {
-        if (!IsThereOngoingConstruction() && IsAvailableConstructionSpace())
+        var constructionZones = GetComponentsInChildren<ConstructionZone>();
+        foreach (var constructionZone in constructionZones)
         {
-            var newConstructionPosition = SelectNewConstuctionPosition();
-
-            var newFarm = Instantiate(farm, newConstructionPosition,
-                Quaternion.identity, buildingsParent.transform);
-            newFarm.GetComponent<Farm>().MyBase = this;
+            constructionZone.HandleConstruction(this);
         }
-    }
-
-    private bool IsAvailableConstructionSpace()
-    {
-        var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
-
-        if (currentConstructionZone) { return !currentConstructionZone.IsZoneFull(); }
-        else { return false; }
     }
 
     private bool IsThereOngoingConstruction()
     {
         bool isThereOngoingConstrucion = false;
-        foreach (Transform child in buildingsParent.transform)
+
+        var constructionZones = GetComponentsInChildren<ConstructionZone>();
+        foreach (var constructionZone in constructionZones)
         {
-            var farm = child.GetComponent<Farm>();
-            if (!farm.IsBuilingComplete)
-            {
-                isThereOngoingConstrucion = true;
-                break;
-            }
+            isThereOngoingConstrucion |= constructionZone.IsThereOngoingConstruction();
         }
 
         return isThereOngoingConstrucion;
     }
 
-    private Vector3 SelectNewConstuctionPosition()
-    {
-        var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
-        return currentConstructionZone.CalculatePositionInWorld();
-    }
-
     public GameObject GetCurrentConstruction()
     {
-        foreach (Transform child in buildingsParent.transform)
+        GameObject currentConstruction = null;
+
+        var constructionZones = GetComponentsInChildren<ConstructionZone>();
+        foreach (var constructionZone in constructionZones)
         {
-            var farm = child.GetComponent<Farm>();
-            if (!farm.IsBuilingComplete)
-            {
-                return child.gameObject;
-            }
+            currentConstruction = constructionZone.GetCurrentConstruction();
         }
 
-        return null;
+        return currentConstruction;
     }
 
     private void SpawnCollector()
@@ -149,6 +130,7 @@ public class Base : MonoBehaviour
         {
             minionsParent = new GameObject(cMinionsParentName);
             minionsParent.transform.SetParent(transform);
+            minionsParent.transform.position = transform.position;
         }
     }
 
@@ -159,6 +141,7 @@ public class Base : MonoBehaviour
         {
             buildingsParent = new GameObject(cBuildingsParentName);
             buildingsParent.transform.SetParent(transform);
+            buildingsParent.transform.position = transform.position;
         }
     }
 
@@ -175,17 +158,25 @@ public class Base : MonoBehaviour
         Vector2 size = new Vector2(400, 300);
         Vector2 gapSize = new Vector2(xGap, yGap);
 
-        var newZone = Instantiate(constructionZone, transform.position + displacement, Quaternion.identity, transform);
+        zoneCounter++;
+        var newZone = Instantiate(constructionZone, transform.position + displacement, 
+            Quaternion.identity, buildingsParent.transform);
         newZone.GetComponent<BoxCollider2D>().size = size;
+        newZone.GetComponent<ConstructionZone>().ZoneIndex = zoneCounter;
         newZone.GetComponent<ConstructionZone>().GapSize = gapSize;
         newZone.GetComponent<ConstructionZone>().BuildingType = farm;
-        newZone.name = cConstructionZone;
+        newZone.name = cConstructionZone + " " +zoneCounter.ToString();
     }
 
-    internal void SignConstructionComplete()
+    internal void SignConstructionComplete(Farm farm)
     {
-        var currentConstructionZone = transform.Find(cConstructionZone).GetComponent<ConstructionZone>();
-        currentConstructionZone.BuildingFinished();
+        var constructionZoneParent = farm.transform.parent;
+        var currentConstructionZone = constructionZoneParent.GetComponent<ConstructionZone>();
+
+        if (currentConstructionZone)
+        {
+            currentConstructionZone.BuildingFinished();
+        }
     }
 
     internal void SignMaintenanceNeeded(Farm building)
