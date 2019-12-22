@@ -10,116 +10,107 @@ public class ConstructionZone : MonoBehaviour
     public Vector2 Size { get; set; }
     public Vector2 GapSize { get; set; }
     public int ZoneIndex { get; set; }
+    private GameObject[,] buildingGrid;
 
-    private int numberOfBuildings;
-    private List<Vector3> emptyGridCells;
+    private Vector2 BuildingSize => BuildingType.GetComponent<BoxCollider2D>().size;
+    private Vector3 ZoneOrigin
+    {
+        get
+        {
+            var zoneCenter = GetComponent<BoxCollider2D>();
+            return new Vector3(
+                    zoneCenter.transform.position.x - zoneCenter.size.x / 2,
+                    zoneCenter.transform.position.y - zoneCenter.size.y / 2,
+                    0);
+        }
+    }
 
     void Start()
     {
-        numberOfBuildings = 0;
         Size = GetComponent<BoxCollider2D>().size;
-
-        CalculateGridCells();
-        SortCellsByDistanceToParent();
+        InitGrid();
     }
 
-    private void CalculateGridCells()
+    private void InitGrid()
     {
-        emptyGridCells = new List<Vector3>();
-        var gridOrigin = CalculateStartingPoint();
-        var buildingSize = GetBuildingSize();
-        CalculateGridLimits(out int xLimit, out int yLimit);
+        int numX = Mathf.FloorToInt((Size.x + GapSize.x) / (BuildingSize.x + GapSize.x));
+        int numY = Mathf.FloorToInt((Size.y + GapSize.y) / (BuildingSize.y + GapSize.y));
 
+        buildingGrid = new GameObject[numX, numY];
+    }
+
+    private (Vector2 gridPos, Vector3 worldPos, bool isCellFound) FindClosestGridCell()
+    {
+        bool isCellFound = false;
+        var xLimit = buildingGrid.GetLength(0);
+        var yLimit = buildingGrid.GetLength(1);
+        var baseCoordinates = transform.parent.position;
+
+        float minDistance = float.MaxValue;
+        Vector2 gridPos = Vector2.zero;
+        Vector3 worldPos = Vector3.zero;
         for (int xIndex = 0; xIndex < xLimit; xIndex++)
         {
             for (int yIndex = 0; yIndex < yLimit; yIndex++)
             {
-                var xPos = (1 + xIndex) * buildingSize.x + xIndex * GapSize.x;
-                var yPos = (1 + yIndex) * buildingSize.y + yIndex * GapSize.y;
+                if (buildingGrid[xIndex, yIndex] != null) { continue; }
 
-                emptyGridCells.Add(new Vector3(xPos, yPos, 0) + gridOrigin);
+                var currentPos = GridPosToWordPos(xIndex, yIndex);
+                var distance = Vector3.Distance(baseCoordinates, currentPos);
+                if (minDistance > distance)
+                {
+                    isCellFound = true;
+                    minDistance = distance;
+                    gridPos = new Vector2(xIndex, yIndex);
+                    worldPos = currentPos;
+                }
             }
         }
+        
+        return (gridPos, worldPos, isCellFound);
     }
 
-    private void SortCellsByDistanceToParent()
+    private Vector3 GridPosToWordPos(int xIndex, int yIndex)
     {
-        if (!transform.parent) { return; }
-        var baseCoordinates = transform.parent.position;
-        emptyGridCells = emptyGridCells.OrderBy(x => Vector3.Distance(baseCoordinates, x)).ToList();
+        var xPos = (1 + xIndex) * BuildingSize.x + xIndex * GapSize.x;
+        var yPos = (1 + yIndex) * BuildingSize.y + yIndex * GapSize.y;
+
+        Vector3 currentPos = new Vector3(xPos, yPos, 0) + ZoneOrigin;
+        return currentPos;
     }
 
-    public Vector3 CalculatePositionInWorld()
+    private bool IsZoneFull()
     {
-        var position = emptyGridCells.First();
-        emptyGridCells.Remove(emptyGridCells.First());
-        return position;
-    }
-
-    public bool IsZoneFull()
-    {
-        return CalculateMaxNumberOfBuildings() <= numberOfBuildings;
-    }
-
-    private int CalculateMaxNumberOfBuildings()
-    {
-        CalculateGridLimits(out int xLimit, out int yLimit);
-        return xLimit * yLimit;
-    }
-
-    public void BuildingFinished()
-    {
-        numberOfBuildings++;
-    }
-
-    private Vector2 GetBuildingSize()
-    {
-        return BuildingType.GetComponent<BoxCollider2D>().size;
-    }
-
-    private void CalculateGridLimits(out int xLimit, out int yLimit)
-    {
-        var buildingSize = GetBuildingSize();
-        xLimit = Mathf.FloorToInt((Size.x + GapSize.x) / (buildingSize.x + GapSize.x));
-        yLimit = Mathf.FloorToInt((Size.y + GapSize.y) / (buildingSize.y + GapSize.y));
-    }
-
-    private Vector3 CalculateStartingPoint()
-    {
-        var zoneCenter = GetComponent<BoxCollider2D>();
-        return new Vector3(
-                zoneCenter.transform.position.x - zoneCenter.size.x / 2,
-                zoneCenter.transform.position.y - zoneCenter.size.y / 2,
-                0);
-    }
-
-    internal void HandleConstruction(Base newBase)
-    {
-        if (!IsThereOngoingConstruction() && !IsZoneFull())
+        foreach (var cell in buildingGrid)
         {
-            var newConstructionPosition = CalculatePositionInWorld();
-
-            var newFarm = Instantiate(BuildingType, newConstructionPosition,
-                Quaternion.identity, transform);
-            newFarm.GetComponent<Farm>().MyBase = newBase;
+            if (cell == null) return false;
         }
+
+        return true;
+    }
+
+    internal void HandleConstruction()
+    {
+        if (IsThereOngoingConstruction() || IsZoneFull()) { return; }
+
+        (Vector2 gridPos, Vector3 worldPos, bool isCellFound) = FindClosestGridCell();
+        if (!isCellFound) { return; }
+
+        var newFarm = Instantiate(BuildingType, worldPos,
+            Quaternion.identity, transform);
+
+        buildingGrid[(int)gridPos.x, (int)gridPos.y] = newFarm;
     }
 
     public bool IsThereOngoingConstruction()
     {
-        bool isThereOngoingConstrucion = false;
-
         var farms = GetComponentsInChildren<Farm>();
         foreach (var farm in farms)
         {
-            if (!farm.IsBuilingComplete)
-            {
-                isThereOngoingConstrucion = true;
-                break;
-            }
+            if (!farm.IsBuilingComplete) { return true; }
         }
 
-        return isThereOngoingConstrucion;
+        return false;
     }
 
     public GameObject GetCurrentConstruction()
@@ -127,10 +118,7 @@ public class ConstructionZone : MonoBehaviour
         var farms = GetComponentsInChildren<Farm>();
         foreach (var farm in farms)
         {
-            if (!farm.IsBuilingComplete)
-            {
-                return farm.gameObject;
-            }
+            if (!farm.IsBuilingComplete) { return farm.gameObject; }
         }
 
         return null;

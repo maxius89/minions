@@ -75,7 +75,7 @@ public class Base : MonoBehaviour
         var constructionZones = GetComponentsInChildren<ConstructionZone>();
         foreach (var constructionZone in constructionZones)
         {
-            constructionZone.HandleConstruction(this);
+            constructionZone.HandleConstruction();
         }
     }
 
@@ -166,17 +166,6 @@ public class Base : MonoBehaviour
         newZone.GetComponent<ConstructionZone>().GapSize = gapSize;
         newZone.GetComponent<ConstructionZone>().BuildingType = farm;
         newZone.name = cConstructionZone + " " +zoneCounter.ToString();
-    }
-
-    internal void SignConstructionComplete(Farm farm)
-    {
-        var constructionZoneParent = farm.transform.parent;
-        var currentConstructionZone = constructionZoneParent.GetComponent<ConstructionZone>();
-
-        if (currentConstructionZone)
-        {
-            currentConstructionZone.BuildingFinished();
-        }
     }
 
     internal void SignMaintenanceNeeded(Farm building)

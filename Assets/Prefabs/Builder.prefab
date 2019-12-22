@@ -232,6 +232,7 @@ MonoBehaviour:
   rangeOfSight: 300
   weight: 0.3
   repairValue: 10
+  currentState: 0
   idleCounter: 0
 --- !u!114 &2651111066561615904
 MonoBehaviour:

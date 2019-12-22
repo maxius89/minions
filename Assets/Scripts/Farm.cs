@@ -9,7 +9,7 @@ public class Farm : MonoBehaviour
     [SerializeField] private float timeBetweenSpawnsInSeconds = 0.0f;
     [SerializeField] private GameObject resource = null;
 
-    public Base MyBase { get; set; }
+    public Base MyBase { get; private set; }
     public Energy Energy => GetComponent<Energy>();
     public bool IsBuilingComplete { get; private set; }
     private GameObject currentResource;
@@ -21,6 +21,8 @@ public class Farm : MonoBehaviour
 
     void Start()
     {
+        MyBase = GetComponentInParent<Base>();
+
         IsBuilingComplete = false;
         GetComponent<SpriteRenderer>().color =  SetStartingColor();
         constructionProgress = 0;
@@ -58,7 +60,6 @@ public class Farm : MonoBehaviour
 
         IsBuilingComplete = true;
         GetComponent<SpriteRenderer>().color = MyBase.TeamColor;
-        MyBase.SignConstructionComplete(this);
     }
 
     private void GenerateResource()

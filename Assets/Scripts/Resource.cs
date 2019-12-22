@@ -8,10 +8,10 @@ public class Resource : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D otherCollider)
     {
-        var minion = otherCollider.GetComponent<Minion>();
-        if (minion)
+        var collector = otherCollider.GetComponent<Collector>();
+        if (collector)
         {
-            minion.AddResource(value);
+            collector.AddResource(value);
             Destroy(gameObject);
         }
     }
